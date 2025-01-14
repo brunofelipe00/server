@@ -38,6 +38,36 @@ app.get('/items/:id', (req, res) => {
     res.status(200).json(item);
 });
 
+
+// Atualizar um item por ID (Update)
+app.put('/items/:id', (req, res) => {
+    const { id } = req.params;
+    const { name, description } = req.body;
+    const itemIndex = items.findIndex(i => i.id === parseInt(id));
+    if (itemIndex === -1) {
+      return res.status(404).json({ error: 'Item not found.' });
+    }
+    if (!name || !description) {
+      return res.status(400).json({ error: 'Name and description are required.' });
+    }
+    items[itemIndex] = { id: parseInt(id), name, description };
+    res.status(200).json(items[itemIndex]);
+  });
+
+
+  // Excluir um item por ID (Delete)
+app.delete('/items/:id', (req, res) => {
+    const { id } = req.params;
+    const itemIndex = items.findIndex(i => i.id === parseInt(id));
+    if (itemIndex === -1) {
+      return res.status(404).json({ error: 'Item not found.' });
+    }
+    items.splice(itemIndex, 1);
+    res.status(204).send();
+  });
+  
+  
+
 // Iniciar o servidor
 app.listen(port, () => {
     console.log (`API rodando em http://localhost:${port}`)
